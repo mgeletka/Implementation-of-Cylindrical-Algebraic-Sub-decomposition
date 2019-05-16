@@ -94,6 +94,9 @@ composition of this thesis.},
 \begin{document}
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
+
+TODO niekde spomenut vyhodu v nepouzivani algebraickych cisel
+
 The algorithm for cylindrical algebraic decomposition (CAD) was primarily invented in order to do a quantifier elimination over the reals. But nowadays it is considered as a general tool in the real algebraic geometry for studying subsets of $R^n$, that can be described by polynomial equations and inequalities (semi-algebraic sets).
 
 The CAD algorithm as the tool for describing this semi-algebraic sets is often too powerful, because it produces much of the redundant information, that we do not need in the final application. The problem is that the CAD algorithm solves the complex problem of the decomposition of the $R^n$ into the regions, over which a given set of polynomials have a constant sign. These produce plenty of the result regions, which has no volume and often are unnecessary in the final application. That can be solved by the restriction of the result dimension. The algorithm with this restriction is often called as sub-CAD or in the specific case when we restrict only to the regions with volume in the final dimension as the full-dimensional CAD.
@@ -165,7 +168,7 @@ Univariate polynomial of degree $n$ over the ring $R$ is a function in the form:
 \begin{align*}
 p(x) =  \sum_{i=0}^n a_ix^i;\ \ \  a_i \in R, a_n \neq 0 
 \end{align*}
-The elements $a_0, a_1 .. a_n$ are called the coefficients of the polynomial $p$. Especially the coefficient $a_0$ is called constant coefficient and $a_n$ leading coefficient of the polynomial $p$.
+The elements $a_0, a_1 .. a_n$ are called the coefficients of the polynomial $p$. The coefficient $a_0$ is called constant coefficient and $a_n$ leading coefficient of the polynomial $p$.
 \newline\newline
 The set of all polynomial over ring $R$ is called the ring of the polynomials over $R$, and we represent it with symbol $R[x]$.
 \end{definition}
@@ -210,6 +213,19 @@ We denote the degree and the leading coefficient of such a multivariate polynomi
 
 The total \textbf{degree of a multivariate monomial} $x_1^{e_1}, x_2^{e_2}, \dots x_n^{e_n}$ equals to  $e_1 + e_2 \dots + e_n$, and the total degree of non-zero polynomial is the maximal total degree of its monomials.\cite{gathen_gerhard_2013} The degree of zero polynomial is defined as minus infinity.
 
+TODO monomia order, lexigraphic order
+
+After introducing univariate and multivariate polynomials, we define the notation of the affine algebraic variety, which is essential in the definition of the CAD algorithm. In this thesis, we will work only with the particular point of an affine algebraic variety, which is that it is the set of solutions in a ring R of a system of polynomial equations with coefficients in R. More precisely:
+
+\begin{definition}
+Lets be $f_1, \dots, f_n$ be multivariate polynomials with coefficients in R, they define an affine variety or zero set $V(f_1, \dots, f_n)$ as folowing:
+\begin{align*}
+\{(a_1, \dots, a_k) \in R^n \ |\ f_1(a_1, \dots, a_k) = \dots = f_n(a_1, \dots, a_k) = 0\}
+\end{align*}
+\end{definition}
+
+
+
 \section{Cylindrical algebraic decomposition}
 In this section we formally introduce the CAD problem. We do it by gradually defining all conditions, that must hold for the result of the CAD problem.
  The notation and definition are mostly adopted from Collin's original work \citetitle{Arnon:1984:CAD:2054.2069}.
@@ -244,13 +260,13 @@ The simplest example of the cylinder is cylinder of the whole n-dimensional spac
 \begin{figure}[H]
   \begin{center}
       \begin{minipage}{.4\textwidth}
-          \includegraphics[width=\textwidth]{fithesis/images/flower2D.png}
+          \includegraphics[width=\textwidth]{fithesis/images/likeCircle.png}
     \end{minipage}
     \begin{minipage}{.4\textwidth}
-      \includegraphics[width=\textwidth]{fithesis/images/flower3D.png} 
+      \includegraphics[width=\textwidth]{fithesis/images/cylinder.png} 
     \end{minipage}
   \end{center}
-  \caption{The cylinder over the two dimensional "flower" region}
+  \caption{The cylinder over the two-dimensional region described by the equation $1 = x^6 + y^6$}
 \end{figure}
 
 \begin{definition}
@@ -344,30 +360,86 @@ Lets be $R$ and $f$ be real valued function defined on $R$ then $f$ is sign inva
 The region R is then A-invariant, where $A=|A_1\dots A_n|$ and $A_i$ is real valued function defined on $R$, if each $A_i$ is invariant on R.
 Collection of the regions is A-invariant if the each element of the collection is A-invariant. As a consequence, we called CAD A-invariant if the result is A-invariant, where A is the collection of input polynomials.
 
+\section{Complexity of the algorithm}
+The CAD method for quantifier elimination improved on the complexity of Tarski’s original decision method, which had non-elementary complexity. However, constructing a CAD is still a difficult procedure \parencite{phdthesisWilson}. Collins in his original paper proofs that upper bound for original CAD  for a logic input formula is bound by function:
+
+\begin{equation}
+    f(d.m.l) = (2n)^{2^{2r + 8}}m^{2^{r+6}}d^3a
+\end{equation}
+
+where r is the number of the variables,  m is the number of the polynomials, n is the maximum degree of any polynomial in any variable, d is the maximum length of any integer coefficient of any polynomial, and a is the number of occurrences of atomic formulas in the input formula.\cite{10.1007/3-540-07407-4_17}
+
+The main point of the result bound is that the CAD algorithm is doubly experiential on a number of input polynomials and number of variables. The exponential behavior, As was proved in \citetitle{DAVENPORT198829}, is not restricted to the algorithm itself but to the problem it solves. 
+
+The proof is essentially based on a technique for writing $x^{2^{2^{k+1}}}_1 = x_2$ in a form whose length is only linear in k. The resulting CAD of this polynomial has to have then 0-dimensional regions representing roots of this polynomial. \parencite{DAVENPORT198829} This proof inform us about the complexity of the quantifier elimination, but not about specific algorithms derived from the CAD algorithm.
+
 Next in Figure \ref{fig:gingerbreadCAD} we give a more complex example of the CAD. The example is was originally published in \citetitle{LaValle:2006:PA:1213331}. The example shows A-invariant CAD, where A are 4 polynomial functions forming "gingerbread face". In the figure are shown total of 93 CAD regions in total, in which only 37 are full-dimensional.
 
-\begin{figure}
+\begin{figure}[H]
   \begin{center}
-      \begin{minipage}{0.7\textwidth}
+      \begin{minipage}{0.66\textwidth}
       \includegraphics[width=\textwidth]{fithesis/images/CADface.jpg} 
     \end{minipage}
   \end{center}
-  \caption{ A cylindrical algebraic decomposition of the gingerbread face. There are $ 37$ $ 2$-cells, $ 64$ $ 1$-cells, and $ 28$ 0-cells. Numbers correspond to open (full dimensional) cells. \cite{LaValle:2006:PA:1213331}}
+  \caption{ A cylindrical algebraic decomposition of the gingerbread face. There are $ 37$ $ 2$-regions, $ 64$ $ 1$-regions, and $ 28$ 0-regions. Numbers correspond to open (full dimensional) regions. \cite{LaValle:2006:PA:1213331}}
   \label{fig:gingerbreadCAD}
 \end{figure}
 
 
-\section{Complexity of the algorithm}
-As is proven in \citetitle{DAVENPORT198829}
-
 \section{Cylindrical algebraic sub-decomposition}
-definition of subcad why subcad complexity in \citetitle{Wilson2014}
+As we have shown, the complexity of the CAD resides in the number of output regions. That brings the idea of some restrictions of result regions and not producing all regions needed for the qualifier elimination.
+With this approach we introduce notation of the sub-CAD simply as:
+
+\begin{definition}
+Let D be a CAD of $\mathbb{R}^n$ (represented as a set of regions). Then a subset $E \subseteq D$ is a cylindrical algebraic sub-decomposition (sub-CAD).
+\end{definition}
+
+When we defined the notation of the sub-CAD, then we can introduce a rule, how we choose regions into our sub-CAD. In \citetitle{Wilson2014} they introduced notation of variety sub-CAD $\ell$-sub-CAD as follow:
+
+\begin{definition}
+Define the set of regions in a CAD of a given dimension as a layer. Let $\ell$ be an integer with 
+$1 \leq i \leq n+1$.
+Then an $\ell$-layered sub-CAD ($\ell$-L-sub-CAD) is the subset of a CAD of dimension n consisting of all regions of dimension $n - i$ for $0 \leq i < \ell$. 
+\end{definition}
+
+We refer to a CAD consisting of all regions of all dimensions as a complete CAD and for the regions only of the highest dimension as a \textbf{full-dimensional CAD}.
+
+In this thesis we implement such a  full-dimensional CAD, This implementation can be sufficient for many practical purposes, such as volume integration, graphical representation of solution sets, or global optimization over open sets given by polynomial inequality constraints.\cite{STRZEBONSKI2000471}
+
+The better computing time in practice resides in the theoretical upper bound for computing only the full-dimensional CAD, which is significantly lower as the original Collins upper bound. As is shown in  \citetitle{10.1093/comjnl/36.5.432}, the upper bound for full-dimensional CAD is:
+
+\begin{equation}
+    (2d)^{3n+4}m^{2^{n + 4}l^3}
+\end{equation}
+
 
 
 
 \chapter{Algorithm}
-TODO elementary description of algorithm, 
+In this chapter, we describe the algorithm, which produces the A-invariant cylindrical algebraic decomposition, where A is input polynomials in n variables for the algorithm. The algorithm is typically divided into three phases: projection, base, and an extension phase.
+
+The algorithm begins by computing a set PROJ(A) $\subseteq$ $\mathbb{R}^{n-1}$ ("PROJ"
+stands for "projection"),then PROJ(PROJ(A)) = $PROJ^2(A)$,and so on  until $PROJ^{n-1}(A)$ has been
+computed. This is the projection phase. The construction of a  $PROJ^{n-1}(A)$-
+invariant cad of $\mathbb{R}^1$ is the base phase, which consist of the computing roots of the projected polynomials, following by creating a 0-dimensional section (representing roots) and 1-dimensional sectors (representing interval between them).   The successive extensions of the cad
+of $\mathbb{R}^1$ to a of $\mathbb{R}^2$, the cad of $\mathbb{R}^2$ to a cad of $\mathbb{R}^3$ and so on, until an A-invariant cad of $\mathbb{R}^n$ is obtained are the extension phase. \cite{Arnon:1984:CAD:2054.2069}
+In this chapter, we described all three stages of the algorithm.
+
+
 \section{Projection phase}
+The key to the projection phase is the definition of the projection operator PROJ. Firstly we define the original Collins projection operator, then we briefly described the alternative projection operators, which has been developed after Collins original publication.
+\subsection{Collins projection operator}
+We define the projection operator PROJ, such TODO 
+
+\begin{definition}
+Lets be p a polynomial and R a region $\subset \mathbb{R}^{n-1}$, then we say that p is \textbf{delineable} on R if  V(f) $\cap$ Z(R) consist of k disjoint sections of Z(R), for some k $\geq 0$.
+\end{definition}
+
+
+\subsection{Alternative projections operators}
+
+
+
 \section{Base phase}
 In the base phase of our algorithm, we have to deal with the problem of computing the real roots of a univariate polynomial This problem  could be considered as the fundamental problem of computational algebra\parencite{yap2000fundamental} as well as in many applications ranging from computational geometry to quantifier elimination. 
 
@@ -438,7 +510,7 @@ The next pseudo code of algorithm $DescartesRootIsolation$ combines the  Descart
 \end{algorithm}
 
 \paragraph{
-vytvorenie base cells and indexing
+vytvorenie base region and indexing
 }
 \section{Extension phase}
 
@@ -526,7 +598,7 @@ We tested the root isolation methods on sets of already computed examples. We co
 }  and decided if result error satisfies the given precision.
 The other two phases of the algorithm, projection, and extension, which are depended on the implementation of the root isolation, we also tested on sets of example on satisfying conditions, which must hold for the defined polynomial projection and the region extension described in Algorithm chapter.
 
-We tested the overall functionality of our implementation, by comparing the results with already computed  decomposition described in \citetitle{Collins:1976} 
+We tested the overall functionality of our implementation, by comparing the results with already computed  decomposition described in \citetitle{Arnon:1984:CAD:2054.2069} 
 
 
 \chapter{Experimental evaluation}
